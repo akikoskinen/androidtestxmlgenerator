@@ -5,7 +5,7 @@ from instrumentation import Status
 def ParseInstrumentation(data):
 	instrumentation = Instrumentation()
 	
-	statusCodeRE = re.compile('INSTRUMENTATION_STATUS_CODE: (?P<statuscode>\d+)')
+	statusCodeRE = re.compile('INSTRUMENTATION_STATUS_CODE: (?P<statuscode>-?\d+)')
 	
 	statusCodeMatch = statusCodeRE.match(data)
 	

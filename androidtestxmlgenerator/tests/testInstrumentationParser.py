@@ -17,11 +17,17 @@ class TestInstrumentationParser(unittest.TestCase):
 		result = ParseInstrumentation('')
 		self.assertEqual(len(result.statuses()), 0)
 	
-	def testOneStatusReportWithCode(self):
-		data = 'INSTRUMENTATION_STATUS_CODE: 1'
+	def _runStatusReportWithCodeTest(self, code):
+		data = 'INSTRUMENTATION_STATUS_CODE: %d' % code
 		result = ParseInstrumentation(data)
 		self.assertEqual(len(result.statuses()), 1)
-		self.assertEqual(result.statuses()[0].statusCode, 1);
+		self.assertEqual(result.statuses()[0].statusCode, code);
+	
+	def testOneStatusReportWithCode(self):
+		self._runStatusReportWithCodeTest(1)
+		
+	def testOneStatusReportWithNegativeCode(self):
+		self._runStatusReportWithCodeTest(-1)
 
 def main():    
 	suite = unittest.TestLoader().loadTestsFromTestCase(TestInstrumentationParser)
