@@ -50,6 +50,10 @@ class TestInstrumentationParser(unittest.TestCase):
 		
 	def testOneStatusReportWithTwoKeyValuePairs(self):
 		self._runStatusReportWithKeyValuesTest([{'key': 'key1', 'value': 'value1'}, {'key': 'key2', 'value': 'value2'}])
+	
+	def testOneStatusReportWithKeyValuePairWithMultilineValue(self):
+		self._runStatusReportWithKeyValuesTest([{'key': 'key1', 'value': 'line1\nline2'}])
+
 
 def main():    
 	suite = unittest.TestLoader().loadTestsFromTestCase(TestInstrumentationParser)
