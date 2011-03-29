@@ -63,6 +63,21 @@ class TestInstrumentationToTestResultTransformer(unittest.TestCase):
 		self.assertEqual(testCase.failMessage, self.FAIL_REASON)
 		self.assertEqual(testCase.failStack, self.STACK)
 
+	METHOD2 = 'testMethod2'
+	
+	def testTwoSucceedingTestMethods(self):
+		self._addSuccessfulTestRun(self.FULL_CLASS, self.METHOD)
+		self._addSuccessfulTestRun(self.FULL_CLASS, self.METHOD2)
+		
+		testResults = Transform(self._instrumentation)
+		
+		testSuite = testResults[0]
+		
+		testCase = testSuite.testCases[0]
+		self.assertEqual(testCase.name, self.METHOD)
+		testCase = testSuite.testCases[1]
+		self.assertEqual(testCase.name, self.METHOD2)
+
 def main():    
 	suite = unittest.TestLoader().loadTestsFromTestCase(TestInstrumentationToTestResultTransformer)
 	unittest.TextTestRunner(verbosity = 2).run(suite)
