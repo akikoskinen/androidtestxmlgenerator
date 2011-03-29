@@ -7,46 +7,51 @@ from xml.etree import ElementTree
 import unittest
 
 class TestTestResultXMLExporter(unittest.TestCase):
-	def _runExportedXMLComparison(self, testResults, expectedXml):
-		actualXml = ElementTree.tostring(ElementTree.fromstring(ExportXML(testResults)))
-		expected = ElementTree.tostring(ElementTree.fromstring(expectedXml))
+	def setUp(self):
+		self._testSuites = []
+	
+	def _addTestSuite(self, name, package, time):
+		testSuite = TestSuite(name, package, time)
+		self._testSuites.append(testSuite)
+		return testSuite
+	
+	def _generateExpectedXml(self):
+		xml = '<testsuites>'
+		
+		for suite in self._testSuites:
+			xml += '<testsuite name="%s" package="%s" time="%.3f">' % (suite.name, suite.package, suite.time)
+			
+			for case in suite.testCases:
+				xml += '<testcase name="%s"></testcase>' % case.name
+			
+			xml += '</testsuite>'
+		
+		xml += '</testsuites>'
+		
+		return xml
+	
+	def _runExportedXMLComparison(self):
+		actualXml = ElementTree.tostring(ElementTree.fromstring(ExportXML(self._testSuites[0])))
+		expected = ElementTree.tostring(ElementTree.fromstring(self._generateExpectedXml()))
 		self.assertEqual(actualXml, expected)
 	
 	def testEmptyTestResults(self):
-		time = 1.0
-		testResults = TestSuite('name', 'package', time)
+		self._addTestSuite('name', 'package', 1.0)
 		
-		expectedStr = ''.join(('<testsuites>',
-		                       '<testsuite name="name" package="package" time="1.000"></testsuite>',
-		                       '</testsuites>'))
-		
-		self._runExportedXMLComparison(testResults, expectedStr)
+		self._runExportedXMLComparison()
 
 	def testOnePassingTestCaseInOneTestSuite(self):
-		time = 1.0
-		testSuite = TestSuite('name', 'package', time)
+		testSuite = self._addTestSuite('name', 'package', 1.0)
 		testSuite.addTestCase(TestCase('testName'))
 		
-		expectedStr = ''.join(('<testsuites>',
-		                       '<testsuite name="name" package="package" time="1.000">',
-		                       '<testcase name="testName"></testcase>',
-		                       '</testsuite>',
-		                       '</testsuites>'))
-		self._runExportedXMLComparison(testSuite, expectedStr)
+		self._runExportedXMLComparison()
 		
 	def testTwoPassingTestCasesInOneTestSuite(self):
-		time = 1.0
-		testSuite = TestSuite('name', 'package', time)
+		testSuite = self._addTestSuite('name', 'package', 1.0)
 		testSuite.addTestCase(TestCase('testName1'))
 		testSuite.addTestCase(TestCase('testName2'))
 		
-		expectedStr = ''.join(('<testsuites>',
-		                       '<testsuite name="name" package="package" time="1.000">',
-		                       '<testcase name="testName1"></testcase>',
-		                       '<testcase name="testName2"></testcase>',
-		                       '</testsuite>',
-		                       '</testsuites>'))
-		self._runExportedXMLComparison(testSuite, expectedStr)
+		self._runExportedXMLComparison()
 
 def main():    
 	suite = unittest.TestLoader().loadTestsFromTestCase(TestTestResultXMLExporter)
