@@ -35,7 +35,7 @@ class TestInstrumentationParser(unittest.TestCase):
 		status = result.statuses()[0]
 		
 		for kv in keyValues:
-			self.assertEqual(status.values[kv[KEY]], kv[VALUE])
+			self.assertEqual(status[kv[KEY]], kv[VALUE])
 	
 	def testOneStatusReportWithOneKeyValuePair(self):
 		self._runStatusReportWithKeyValuesTest([['key1', 'value1']])

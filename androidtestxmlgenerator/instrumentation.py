@@ -1,14 +1,14 @@
 
 class Status():
 	def __init__(self):
-		self.values = {}
+		self._values = {}
 		self.statusCode = 0
 	
 	def __getitem__(self, key):
-		return self.values[key]
+		return self._values[key]
 	
 	def __setitem__(self, key, value):
-		self.values[key] = value
+		self._values[key] = value
 
 class Instrumentation():
 	def __init__(self):

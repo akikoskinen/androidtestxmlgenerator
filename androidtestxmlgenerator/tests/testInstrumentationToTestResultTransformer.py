@@ -14,14 +14,14 @@ class TestInstrumentationToTestResultTransformer(unittest.TestCase):
 		
 	def _addTestRun(self, className, methodName, result):
 		status = Status()
-		status.values['class'] = className
-		status.values['test'] = methodName
+		status['class'] = className
+		status['test'] = methodName
 		status.statusCode = 1
 		self._instrumentation.addStatus(status)
 		
 		status = Status()
-		status.values['class'] = className
-		status.values['test'] = methodName
+		status['class'] = className
+		status['test'] = methodName
 		status.statusCode = result
 		self._instrumentation.addStatus(status)
 
