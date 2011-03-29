@@ -31,7 +31,7 @@ class TestTestResultXMLExporter(unittest.TestCase):
 		return xml
 	
 	def _runExportedXMLComparison(self):
-		actualXml = ElementTree.tostring(ElementTree.fromstring(ExportXML(self._testSuites[0])))
+		actualXml = ElementTree.tostring(ElementTree.fromstring(ExportXML(self._testSuites)))
 		expected = ElementTree.tostring(ElementTree.fromstring(self._generateExpectedXml()))
 		self.assertEqual(actualXml, expected)
 	
@@ -50,6 +50,12 @@ class TestTestResultXMLExporter(unittest.TestCase):
 		testSuite = self._addTestSuite('name', 'package', 1.0)
 		testSuite.addTestCase(TestCase('testName1'))
 		testSuite.addTestCase(TestCase('testName2'))
+		
+		self._runExportedXMLComparison()
+		
+	def testTwoTestSuites(self):
+		self._addTestSuite('name1', 'package1', 1.0)
+		self._addTestSuite('name2', 'package2', 1.0)
 		
 		self._runExportedXMLComparison()
 
