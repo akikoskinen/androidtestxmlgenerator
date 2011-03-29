@@ -4,19 +4,30 @@ from instrumentationparser import ParseInstrumentation
 from instrumentationtotestresulttransformer import Transform
 from testresultxmlexporter import ExportXML
 
-inFileName = 'testresults.txt'
-outFileName = 'testresults.xml'
+from optparse import OptionParser
 
-inFile = open(inFileName, 'r')
-src = inFile.read()
-inFile.close()
+if __name__ == '__main__':
+	usage = "usage: %prog [options] <infilename> <outfilename>"
+	parser = OptionParser(usage)
+	
+	(options, args) = parser.parse_args()
+	
+	if len(args) != 2:
+		parser.error("Input and output file names must be specified")
 
-instrumentation = ParseInstrumentation(src)
+	inFileName = args[0]
+	outFileName = args[1]
 
-testResults = Transform(instrumentation)
+	inFile = open(inFileName, 'r')
+	src = inFile.read()
+	inFile.close()
 
-xml = ExportXML(testResults)
+	instrumentation = ParseInstrumentation(src)
 
-outFile = open(outFileName, 'w')
-outFile.write(xml)
-outFile.close()
+	testResults = Transform(instrumentation)
+
+	xml = ExportXML(testResults)
+
+	outFile = open(outFileName, 'w')
+	outFile.write(xml)
+	outFile.close()
