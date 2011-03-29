@@ -33,6 +33,20 @@ class TestTestResultXMLExporter(unittest.TestCase):
 		                       '</testsuite>',
 		                       '</testsuites>'))
 		self._runExportedXMLComparison(testSuite, expectedStr)
+		
+	def testTwoPassingTestCasesInOneTestSuite(self):
+		time = 1.0
+		testSuite = TestSuite('name', 'package', time)
+		testSuite.addTestCase(TestCase('testName1'))
+		testSuite.addTestCase(TestCase('testName2'))
+		
+		expectedStr = ''.join(('<testsuites>',
+		                       '<testsuite name="name" package="package" time="1.000">',
+		                       '<testcase name="testName1"></testcase>',
+		                       '<testcase name="testName2"></testcase>',
+		                       '</testsuite>',
+		                       '</testsuites>'))
+		self._runExportedXMLComparison(testSuite, expectedStr)
 
 def main():    
 	suite = unittest.TestLoader().loadTestsFromTestCase(TestTestResultXMLExporter)
