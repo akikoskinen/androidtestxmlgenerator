@@ -17,8 +17,7 @@ def _ParseStatus(statusBlockString):
 		for keyvalue in _keyValuesSplitterRE.split(statusMatch.group('keyvalues')):
 			keyValueMatch = _keyValueRE.match(keyvalue)
 			if keyValueMatch:
-				keyValuePair = {'key': keyValueMatch.group('key'), 'value': keyValueMatch.group('value').strip()}
-				status.values.append(keyValuePair)
+				status.values[keyValueMatch.group('key')] = keyValueMatch.group('value').strip()
 		status.statusCode = int(statusMatch.group('statuscode'))
 	
 	return status

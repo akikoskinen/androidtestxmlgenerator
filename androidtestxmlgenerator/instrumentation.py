@@ -1,7 +1,7 @@
 
 class Status():
 	def __init__(self):
-		self.values = []
+		self.values = {}
 		self.statusCode = 0
 
 class Instrumentation():

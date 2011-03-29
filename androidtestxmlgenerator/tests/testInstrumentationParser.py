@@ -5,14 +5,6 @@ from instrumentationparser import ParseInstrumentation
 import unittest
 
 class TestInstrumentationParser(unittest.TestCase):
-	# Can be overriden if initialization code is needed
-	#def setUp(self):
-		#pass
-
-	# Can be overriden if deinitialization code is needed
-	#def tearDown(self):
-		#pass
-        
 	def testEmptyInstrumentation(self):
 		result = ParseInstrumentation('')
 		self.assertEqual(len(result.statuses()), 0)
@@ -30,29 +22,29 @@ class TestInstrumentationParser(unittest.TestCase):
 		self._runStatusReportWithCodeTest(-1)
 	
 	def _runStatusReportWithKeyValuesTest(self, keyValues):
+		KEY = 0
+		VALUE = 1
 		data = ''
 		for kv in keyValues:
-			data += "INSTRUMENTATION_STATUS: %s=%s\n" % (kv['key'], kv['value'])
+			data += "INSTRUMENTATION_STATUS: %s=%s\n" % (kv[KEY], kv[VALUE])
 		data += 'INSTRUMENTATION_STATUS_CODE: 1'
 		
 		result = ParseInstrumentation(data)
 		
 		self.assertEqual(len(result.statuses()), 1)
 		status = result.statuses()[0]
-		self.assertEqual(len(status.values), len(keyValues))
-		i = 0
+		
 		for kv in keyValues:
-			self.assertEqual(status.values[i], kv)
-			i += 1
+			self.assertEqual(status.values[kv[KEY]], kv[VALUE])
 	
 	def testOneStatusReportWithOneKeyValuePair(self):
-		self._runStatusReportWithKeyValuesTest([{'key': 'key1', 'value': 'value1'}])
+		self._runStatusReportWithKeyValuesTest([['key1', 'value1']])
 		
 	def testOneStatusReportWithTwoKeyValuePairs(self):
-		self._runStatusReportWithKeyValuesTest([{'key': 'key1', 'value': 'value1'}, {'key': 'key2', 'value': 'value2'}])
+		self._runStatusReportWithKeyValuesTest([['key1', 'value1'], ['key2', 'value2']])
 	
 	def testOneStatusReportWithKeyValuePairWithMultilineValue(self):
-		self._runStatusReportWithKeyValuesTest([{'key': 'key1', 'value': 'line1\nline2'}])
+		self._runStatusReportWithKeyValuesTest([['key1', 'line1\nline2']])
 
 
 def main():    
