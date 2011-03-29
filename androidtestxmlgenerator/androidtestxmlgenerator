@@ -19,7 +19,15 @@ if __name__ == '__main__':
 	outFileName = args[1]
 
 	inFile = open(inFileName, 'r')
-	src = inFile.read()
+	
+	src = ''
+	for line in inFile:
+		if 'DDM dispatch' in line:
+			continue
+		if "Can't dispatch DDM chunk" in line:
+			continue
+		src += line
+	
 	inFile.close()
 
 	instrumentation = ParseInstrumentation(src)
