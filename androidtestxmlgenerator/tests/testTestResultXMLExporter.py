@@ -22,7 +22,10 @@ class TestTestResultXMLExporter(unittest.TestCase):
 			xml += '<testsuite name="%s" package="%s" time="%.3f">' % (suite.name, suite.package, suite.time)
 			
 			for case in suite.testCases:
-				xml += '<testcase name="%s"></testcase>' % case.name
+				xml += '<testcase name="%s">' % case.name
+				if case.isFailing():
+					xml += '<failure message="%s">%s</failure>' % (case.failMessage, case.failStack)
+				xml += '</testcase>'
 			
 			xml += '</testsuite>'
 		
@@ -56,6 +59,14 @@ class TestTestResultXMLExporter(unittest.TestCase):
 	def testTwoTestSuites(self):
 		self._addTestSuite('name1', 'package1', 1.0)
 		self._addTestSuite('name2', 'package2', 1.0)
+		
+		self._runExportedXMLComparison()
+	
+	def testFailingTestCase(self):
+		testSuite = self._addTestSuite('name', 'package', 1.0)
+		testCase = TestCase('testName')
+		testCase.setFailing('message', 'stack')
+		testSuite.addTestCase(testCase)
 		
 		self._runExportedXMLComparison()
 

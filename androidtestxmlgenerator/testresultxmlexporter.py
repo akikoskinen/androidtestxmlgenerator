@@ -13,6 +13,11 @@ def ExportXML(testSuites):
 		for case in testSuite.testCases:
 			caseElement = ElementTree.SubElement(suite, 'testcase')
 			caseElement.set('name', case.name)
+			
+			if case.isFailing():
+				failureElement = ElementTree.SubElement(caseElement, 'failure')
+				failureElement.set('message', case.failMessage)
+				failureElement.text = case.failStack
 	
 	return ElementTree.tostring(root)
 	

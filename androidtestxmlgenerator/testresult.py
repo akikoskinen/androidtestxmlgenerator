@@ -11,3 +11,10 @@ class TestSuite():
 class TestCase():
 	def __init__(self, name):
 		self.name = name
+	
+	def setFailing(self, message, stack):
+		self.failMessage = message
+		self.failStack = stack
+	
+	def isFailing(self):
+		return hasattr(self, 'failMessage')
