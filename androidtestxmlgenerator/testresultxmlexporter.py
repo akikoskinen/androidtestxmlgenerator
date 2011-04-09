@@ -18,6 +18,11 @@ def ExportXML(testSuites):
 				failureElement = ElementTree.SubElement(caseElement, 'failure')
 				failureElement.set('message', case.failMessage)
 				failureElement.text = case.failStack
+			
+			if case.isErroring():
+				errorElement = ElementTree.SubElement(caseElement, 'error')
+				errorElement.set('message', case.errorMessage)
+				errorElement.text = case.errorStack
 	
 	return ElementTree.tostring(root)
 	

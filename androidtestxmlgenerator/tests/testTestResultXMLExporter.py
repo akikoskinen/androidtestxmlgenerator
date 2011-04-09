@@ -25,6 +25,8 @@ class TestTestResultXMLExporter(unittest.TestCase):
 				xml += '<testcase name="%s">' % case.name
 				if case.isFailing():
 					xml += '<failure message="%s">%s</failure>' % (case.failMessage, case.failStack)
+				if case.isErroring():
+					xml += '<error message="%s">%s</error>' % (case.errorMessage, case.errorStack)
 				xml += '</testcase>'
 			
 			xml += '</testsuite>'
@@ -69,6 +71,15 @@ class TestTestResultXMLExporter(unittest.TestCase):
 		testSuite.addTestCase(testCase)
 		
 		self._runExportedXMLComparison()
+
+	def testErroringTestCase(self):
+		testSuite = self._addTestSuite('name', 'package', 1.0)
+		testCase = TestCase('testName')
+		testCase.setErroring('message', 'stack')
+		testSuite.addTestCase(testCase)
+		
+		self._runExportedXMLComparison()
+
 
 def main():    
 	suite = unittest.TestLoader().loadTestsFromTestCase(TestTestResultXMLExporter)
