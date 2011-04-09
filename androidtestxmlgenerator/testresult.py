@@ -18,3 +18,11 @@ class TestCase():
 	
 	def isFailing(self):
 		return hasattr(self, 'failMessage')
+		
+	def setErroring(self, message, stack):
+		self.errorMessage = message
+		self.errorStack = stack
+	
+	def isErroring(self):
+		return hasattr(self, 'errorMessage')
+		

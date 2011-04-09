@@ -7,6 +7,7 @@ import unittest
 
 class TestInstrumentationToTestResultTransformer(unittest.TestCase):
 	SUCCESS = 0
+	ERROR = -1
 	FAIL = -2
 	
 	def setUp(self):
@@ -30,6 +31,10 @@ class TestInstrumentationToTestResultTransformer(unittest.TestCase):
 	
 	def _addFailingTestRun(self, className, methodName, stack):
 		self._addTestRun(className, methodName, self.FAIL)
+		self._instrumentation.statuses()[-1]['stack'] = stack
+	
+	def _addErroringTestRun(self, className, methodName, stack):
+		self._addTestRun(className, methodName, self.ERROR)
 		self._instrumentation.statuses()[-1]['stack'] = stack
 
 	PACKAGE = 'com.example'
@@ -72,11 +77,21 @@ class TestInstrumentationToTestResultTransformer(unittest.TestCase):
 		testResults = Transform(self._instrumentation)
 		
 		testSuite = testResults[0]
-		
 		testCase = testSuite.testCases[0]
 		self.assertEqual(testCase.name, self.METHOD)
 		testCase = testSuite.testCases[1]
 		self.assertEqual(testCase.name, self.METHOD2)
+	
+	def testOneErroringTestMethod(self):
+		self._addErroringTestRun(self.FULL_CLASS, self.METHOD, self.STACK)
+		
+		testResults = Transform(self._instrumentation)
+		
+		testSuite = testResults[0]
+		testCase = testSuite.testCases[0]
+		self.assertTrue(testCase.isErroring())
+		self.assertEqual(testCase.errorMessage, self.FAIL_REASON)
+		self.assertEqual(testCase.errorStack, self.STACK)
 
 def main():    
 	suite = unittest.TestLoader().loadTestsFromTestCase(TestInstrumentationToTestResultTransformer)
