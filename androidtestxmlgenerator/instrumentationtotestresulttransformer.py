@@ -8,15 +8,18 @@ INTERESTING_CODES = (TEST_COMPLETED_OK, TEST_COMPLETED_ERROR, TEST_COMPLETED_FAI
 def Transform(instrumentation):
 	ret = []
 	
-	suite = None
+	suites = {}
 	
 	for status in instrumentation.statuses():
 		if status.statusCode in INTERESTING_CODES:
 			fullClassName = status['class']
 			(package, dot, className) = fullClassName.rpartition('.')
 			
-			if suite is None:
+			if fullClassName in suites:
+				suite = suites[fullClassName]
+			else:
 				suite = TestSuite(fullClassName, package, 0.0)
+				suites[fullClassName] = suite
 				ret.append(suite)
 			
 			case = TestCase(status['test'])

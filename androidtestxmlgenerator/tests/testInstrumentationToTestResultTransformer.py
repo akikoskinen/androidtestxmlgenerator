@@ -37,6 +37,13 @@ class TestInstrumentationToTestResultTransformer(unittest.TestCase):
 		self._addTestRun(className, methodName, self.ERROR)
 		self._instrumentation.statuses()[-1]['stack'] = stack
 
+	def assertTestSuite(self, suite, name, package):
+		self.assertEqual(suite.name, name)
+		self.assertEqual(suite.package, package)
+	
+	def assertTestCase(self, case, method):
+		self.assertEqual(case.name, method)
+
 	PACKAGE = 'com.example'
 	CLASS_NAME = 'TestClass'
 	FULL_CLASS = '.'.join((PACKAGE, CLASS_NAME))
@@ -47,12 +54,8 @@ class TestInstrumentationToTestResultTransformer(unittest.TestCase):
 		
 		testResults = Transform(self._instrumentation)
 		
-		testSuite = testResults[0]
-		self.assertEqual(testSuite.name, self.FULL_CLASS)
-		self.assertEqual(testSuite.package, self.PACKAGE)
-
-		testCase = testSuite.testCases[0]
-		self.assertEqual(testCase.name, self.METHOD)
+		self.assertTestSuite(testResults[0], self.FULL_CLASS, self.PACKAGE)
+		self.assertTestCase(testResults[0].testCases[0], self.METHOD)
 
 	FAIL_REASON = 'frame1'
 	STACK = '\n'.join((FAIL_REASON, 'frame2'))
@@ -76,11 +79,8 @@ class TestInstrumentationToTestResultTransformer(unittest.TestCase):
 		
 		testResults = Transform(self._instrumentation)
 		
-		testSuite = testResults[0]
-		testCase = testSuite.testCases[0]
-		self.assertEqual(testCase.name, self.METHOD)
-		testCase = testSuite.testCases[1]
-		self.assertEqual(testCase.name, self.METHOD2)
+		self.assertTestCase(testResults[0].testCases[0], self.METHOD)
+		self.assertTestCase(testResults[0].testCases[1], self.METHOD2)
 	
 	def testOneErroringTestMethod(self):
 		self._addErroringTestRun(self.FULL_CLASS, self.METHOD, self.STACK)
@@ -92,6 +92,21 @@ class TestInstrumentationToTestResultTransformer(unittest.TestCase):
 		self.assertTrue(testCase.isErroring())
 		self.assertEqual(testCase.errorMessage, self.FAIL_REASON)
 		self.assertEqual(testCase.errorStack, self.STACK)
+	
+	CLASS_NAME2 = 'TestClass2'
+	FULL_CLASS2 = '.'.join((PACKAGE, CLASS_NAME2))
+	
+	def testTwoTestSuites(self):
+		self._addSuccessfulTestRun(self.FULL_CLASS, self.METHOD)
+		self._addSuccessfulTestRun(self.FULL_CLASS2, self.METHOD)
+		
+		testResults = Transform(self._instrumentation)
+		
+		self.assertTestSuite(testResults[0], self.FULL_CLASS, self.PACKAGE)
+		self.assertTestCase(testResults[0].testCases[0], self.METHOD)
+
+		self.assertTestSuite(testResults[1], self.FULL_CLASS2, self.PACKAGE)
+		self.assertTestCase(testResults[1].testCases[0], self.METHOD)
 
 def main():    
 	suite = unittest.TestLoader().loadTestsFromTestCase(TestInstrumentationToTestResultTransformer)
