@@ -1,3 +1,6 @@
+# Copyright (c) 2011 Aki Koskinen
+# Licensed under the MIT license. See LICENSE file for details.
+
 from xml.etree import ElementTree
 
 def ExportXML(testSuites):
@@ -25,4 +28,3 @@ def ExportXML(testSuites):
 				errorElement.text = case.errorStack
 	
 	return ElementTree.tostring(root)
-	

@@ -1,3 +1,6 @@
+# Copyright (c) 2011 Aki Koskinen
+# Licensed under the MIT license. See LICENSE file for details.
+
 from testresult import TestSuite, TestCase
 
 TEST_COMPLETED_OK = 0

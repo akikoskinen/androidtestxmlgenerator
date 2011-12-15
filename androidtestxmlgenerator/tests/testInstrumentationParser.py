@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+# Copyright (c) 2011 Aki Koskinen
+# Licensed under the MIT license. See LICENSE file for details.
+
 from instrumentationparser import ParseInstrumentation
 
 import unittest

@@ -1,3 +1,6 @@
+# Copyright (c) 2011 Aki Koskinen
+# Licensed under the MIT license. See LICENSE file for details.
+
 class TestSuite():
 	def __init__(self, name, package, time):
 		self.name = name
@@ -25,4 +28,3 @@ class TestCase():
 	
 	def isErroring(self):
 		return hasattr(self, 'errorMessage')
-		

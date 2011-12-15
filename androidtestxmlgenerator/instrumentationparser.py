@@ -1,3 +1,5 @@
+# Copyright (c) 2011 Aki Koskinen
+# Licensed under the MIT license. See LICENSE file for details.
 
 import re
 from instrumentation import Status, Instrumentation

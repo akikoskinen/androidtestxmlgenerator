@@ -1,3 +1,5 @@
+# Copyright (c) 2011 Aki Koskinen
+# Licensed under the MIT license. See LICENSE file for details.
 
 class Status():
 	def __init__(self):
