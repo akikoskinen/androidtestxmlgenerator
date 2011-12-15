@@ -1,0 +1,78 @@
+Android Test XML Generator
+--------------------------
+
+This project contains a set of scripts that can be used to transform an Android
+test run result to JUnit XML report format. This might be useful for example
+for continuous integration systems where Android tests are run.
+
+http://github.com/akikoskinen/androidtestxmlgenerator
+
+Running Android tests
+---------------------
+
+This text assumes quite good knowledge about running tests on Android. If you
+are not familiar how testing on Android is done in general you should study
+that before continuing. For general guidance how to run Android tests see
+http://developer.android.com/guide/developing/testing/index.html
+
+In order to use this project you need to output the test results in raw format.
+This can be done by passing the -r option to the 'am instrument' command. Run
+your tests with something like:
+
+  adb shell am instrument -w -r \
+    com.android.test/android.test.InstrumentationTestRunner
+
+When running the tests this way a set of lines are printed which tell about the
+progress of the test run. These lines are quite hard for a human to interpret
+and that's where this project steps in.
+
+You need to somehow capture the output of the test run and save it into a file.
+Then pass that file through the XML generator in this project. Let's assume you
+saved the instrumentation run output to a file called instrumentation.txt. A
+JUnit XML report file is generated from this file with a command like:
+
+  androidtestxmlgenerator instrumentation.txt testresult.xml
+
+The script takes two arguments: first the input file name (the output from the
+instrumentation run) and second the output file name.
+
+The output is now a JUnit XML test report file that many tools can read. You
+can embed this to your continuous integration system for example and admire the
+test result presentation provided by those tools.
+
+Caveats
+-------
+
+- No test duration reporting
+The Android instrumentation output doesn't contain any information about the
+duration the tests took. Hence it's not possible to inform any durations in the
+XML result file either. All times in the XML file are reported as 0 seconds.
+
+Technical information
+---------------------
+
+The code in this project is divided into three modules. When the
+androidtestxmlgenerator script is used all three modules are used together. But
+since the modules are separate it's possible to use this same code for other
+purposes too. The three modules are:
+
+1. instrumentationparser: parses Android instrumentation text output and
+   transforms it into a Python object called Instrumentation. The Android
+   platform doesn't require instrumentation to be used for testing only but it
+   can be used for other purposes too (I just don't know what those could be).
+   If you have such a case and need to parse the instrumentation output this
+   module might be handy.
+
+2. instrumentationtotestresulttransformer: this module does what the name
+   suggests - transforms an instrumentation test run result (obtained usually
+   from instrumentationparser) to a TestSuite Python object.
+
+3. testresultxmlexporter: this module transforms a TestSuite Python object to
+   JUnit XML format. This module can be used separately from the first two
+   modules. It doesn't matter where you get the TestSuite object, this exporter
+   can still be used. It doesn't even depend on Android in any way - you can
+   use it for any kind of testing.
+
+You can replace any of the modules quite easily. For example if you want your
+Android test results in some other format than JUnit XML, just replace the
+testresultxmlexporter with something else.
